@@ -1,0 +1,12 @@
+# Compiled Java files
+build/
+bin/
+target/
+*.class
+
+# Logs
+*.log
+
+# Environment secrets
+.env
+config.properties
