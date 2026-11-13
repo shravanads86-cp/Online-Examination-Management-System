@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Revenue Reports - Fee Collection Portal</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="app-layout">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-icon">FC</div>
+                <h2>Fee Collection Portal</h2>
+                <p>College Admin Panel</p>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="dashboard.html"><span class="icon">&#9632;</span> Dashboard</a>
+                <a href="students.html"><span class="icon">&#9632;</span> Student Management</a>
+                <a href="payments.html"><span class="icon">&#9632;</span> Fee Payments</a>
+                <a href="defaulters.html"><span class="icon">&#9632;</span> Defaulter Analysis</a>
+                <a href="reports.html"><span class="icon">&#9632;</span> Revenue Reports</a>
+            </nav>
+            <div class="sidebar-footer">
+                <button class="btn btn-outline btn-block" style="color:white; border-color:rgba(255,255,255,0.3);" onclick="logout()">Logout</button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-bar">
+                <div style="display:flex; align-items:center; gap:15px;">
+                    <button class="menu-toggle" id="menuToggle">&#9776;</button>
+                    <h1>Revenue Reports</h1>
+                </div>
+                <div class="user-info">
+                    <span>Welcome, <strong id="adminUsername">Admin</strong></span>
+                </div>
+            </header>
+
+            <div class="page-content">
+                <div id="alertBox" class="alert hidden"></div>
+
+                <div class="filter-tabs">
+                    <button class="active" data-type="daily" onclick="setReportType('daily')">Daily Report</button>
+                    <button data-type="monthly" onclick="setReportType('monthly')">Monthly Report</button>
+                    <button data-type="yearly" onclick="setReportType('yearly')">Yearly Report</button>
+                    <button data-type="department" onclick="setReportType('department')">Department-wise</button>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Report Filters</h2>
+                        <button class="btn btn-success btn-sm" onclick="exportReport()">Export CSV</button>
+                    </div>
+                    <div class="card-body">
+                        <div class="search-bar">
+                            <div id="dailyFilter">
+                                <label>Select Date: </label>
+                                <input type="date" id="reportDate" onchange="loadReport()">
+                            </div>
+                            <div id="monthlyFilter" style="display:none;">
+                                <label>Select Month: </label>
+                                <input type="month" id="reportMonth" onchange="loadReport()">
+                            </div>
+                            <div id="yearlyFilter" style="display:none;">
+                                <label>Select Year: </label>
+                                <input type="number" id="reportYear" min="2020" max="2030" onchange="loadReport()">
+                            </div>
+                            <div id="deptFilter" style="display:none;">
+                                <label>Year: </label>
+                                <input type="number" id="reportYearDept" min="2020" max="2030">
+                            </div>
+                            <select id="reportDepartment" onchange="loadReport()" style="display:none;">
+                                <option value="">All Departments</option>
+                                <option value="Computer Science">Computer Science</option>
+                                <option value="Electronics">Electronics</option>
+                                <option value="Mechanical">Mechanical</option>
+                                <option value="Civil">Civil</option>
+                                <option value="Information Science">Information Science</option>
+                            </select>
+                            <button class="btn btn-primary" onclick="loadReport()">Generate Report</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-grid">
+                    <div class="stat-card success">
+                        <h3>Total Collection</h3>
+                        <div class="value" id="reportTotalAmount">Rs. 0.00</div>
+                    </div>
+                    <div class="stat-card info">
+                        <h3>Total Payments</h3>
+                        <div class="value" id="reportTotalCount">0</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Report Data</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table>
+                                <thead id="reportTableHead"></thead>
+                                <tbody id="reportTableBody">
+                                    <tr><td colspan="7" class="empty-state">Select filters and generate report</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/script.js"></script>
+    <script>
+        var today = new Date();
+        document.getElementById('reportDate').value = today.toISOString().split('T')[0];
+        document.getElementById('reportMonth').value = today.toISOString().slice(0, 7);
+        document.getElementById('reportYear').value = today.getFullYear();
+        document.getElementById('reportYearDept').value = today.getFullYear();
+
+        checkAuth().then(function(ok) {
+            if (ok) loadReport();
+        });
+    </script>
+</body>
+</html>

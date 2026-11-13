@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fee Payments - Fee Collection Portal</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="app-layout">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-icon">FC</div>
+                <h2>Fee Collection Portal</h2>
+                <p>College Admin Panel</p>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="dashboard.html"><span class="icon">&#9632;</span> Dashboard</a>
+                <a href="students.html"><span class="icon">&#9632;</span> Student Management</a>
+                <a href="payments.html"><span class="icon">&#9632;</span> Fee Payments</a>
+                <a href="defaulters.html"><span class="icon">&#9632;</span> Defaulter Analysis</a>
+                <a href="reports.html"><span class="icon">&#9632;</span> Revenue Reports</a>
+            </nav>
+            <div class="sidebar-footer">
+                <button class="btn btn-outline btn-block" style="color:white; border-color:rgba(255,255,255,0.3);" onclick="logout()">Logout</button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-bar">
+                <div style="display:flex; align-items:center; gap:15px;">
+                    <button class="menu-toggle" id="menuToggle">&#9776;</button>
+                    <h1>Fee Payment Tracking</h1>
+                </div>
+                <div class="user-info">
+                    <span>Welcome, <strong id="adminUsername">Admin</strong></span>
+                </div>
+            </header>
+
+            <div class="page-content">
+                <div id="alertBox" class="alert hidden"></div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Record Fee Payment</h2>
+                    </div>
+                    <div class="card-body">
+                        <form id="paymentForm">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Select Student *</label>
+                                    <select id="paymentStudent" name="student_id" required onchange="showPendingAmount()">
+                                        <option value="">-- Select Student --</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Pending Amount</label>
+                                    <input type="text" id="pendingAmountDisplay" readonly value="Rs. 0.00" style="background:#f8fafc;">
+                                </div>
+                                <div class="form-group">
+                                    <label>Payment Amount (Rs.) *</label>
+                                    <input type="number" name="amount" min="1" step="0.01" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Payment Date *</label>
+                                    <input type="date" name="payment_date" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Payment Mode *</label>
+                                    <select name="payment_mode" required>
+                                        <option value="Cash">Cash</option>
+                                        <option value="UPI">UPI</option>
+                                        <option value="Card">Card</option>
+                                        <option value="Cheque">Cheque</option>
+                                        <option value="Online">Online</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-success">Record Payment & Generate Receipt</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Payment History</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="search-bar">
+                            <input type="text" id="paymentSearch" placeholder="Search by student name, USN or receipt no...">
+                            <button class="btn btn-primary" onclick="loadPaymentHistory()">Search</button>
+                        </div>
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Receipt No</th>
+                                        <th>Student</th>
+                                        <th>USN</th>
+                                        <th>Amount</th>
+                                        <th>Date</th>
+                                        <th>Mode</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="paymentsTableBody">
+                                    <tr><td colspan="7" class="empty-state">Loading...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Receipt Modal -->
+    <div class="modal-overlay" id="receiptModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Payment Receipt</h3>
+                <button class="modal-close" onclick="closeModal('receiptModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="receiptContent"></div>
+                <div class="form-actions" style="margin-top:20px;">
+                    <button class="btn btn-primary" onclick="printReceipt()">Print Receipt</button>
+                    <button class="btn btn-outline" onclick="closeModal('receiptModal')">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+    <script>
+        document.querySelector('[name="payment_date"]').value = new Date().toISOString().split('T')[0];
+        checkAuth().then(function(ok) {
+            if (ok) {
+                loadStudentsForPayment();
+                loadPaymentHistory();
+            }
+        });
+    </script>
+</body>
+</html>

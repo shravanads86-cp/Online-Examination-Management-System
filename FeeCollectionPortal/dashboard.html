@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Fee Collection Portal</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="app-layout">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-icon">FC</div>
+                <h2>Fee Collection Portal</h2>
+                <p>College Admin Panel</p>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="dashboard.html"><span class="icon">&#9632;</span> Dashboard</a>
+                <a href="students.html"><span class="icon">&#9632;</span> Student Management</a>
+                <a href="payments.html"><span class="icon">&#9632;</span> Fee Payments</a>
+                <a href="defaulters.html"><span class="icon">&#9632;</span> Defaulter Analysis</a>
+                <a href="reports.html"><span class="icon">&#9632;</span> Revenue Reports</a>
+            </nav>
+            <div class="sidebar-footer">
+                <button class="btn btn-outline btn-block" style="color:white; border-color:rgba(255,255,255,0.3);" onclick="logout()">Logout</button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-bar">
+                <div style="display:flex; align-items:center; gap:15px;">
+                    <button class="menu-toggle" id="menuToggle">&#9776;</button>
+                    <h1>Dashboard</h1>
+                </div>
+                <div class="user-info">
+                    <span>Welcome, <strong id="adminUsername">Admin</strong></span>
+                    <button class="btn btn-sm btn-outline" onclick="openModal('changePasswordModal')">Change Password</button>
+                </div>
+            </header>
+
+            <div class="page-content">
+                <div id="alertBox" class="alert hidden"></div>
+
+                <div class="card-grid">
+                    <div class="stat-card info">
+                        <h3>Total Students</h3>
+                        <div class="value" id="totalStudents">0</div>
+                    </div>
+                    <div class="stat-card success">
+                        <h3>Total Revenue</h3>
+                        <div class="value" id="totalRevenue">Rs. 0.00</div>
+                    </div>
+                    <div class="stat-card warning">
+                        <h3>Total Pending Fees</h3>
+                        <div class="value" id="totalPending">Rs. 0.00</div>
+                    </div>
+                    <div class="stat-card danger">
+                        <h3>Total Defaulters</h3>
+                        <div class="value" id="totalDefaulters">0</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Recent Payments</h2>
+                        <a href="payments.html" class="btn btn-sm btn-primary">View All</a>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Receipt No</th>
+                                        <th>Student</th>
+                                        <th>USN</th>
+                                        <th>Amount</th>
+                                        <th>Date</th>
+                                        <th>Mode</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recentPaymentsBody">
+                                    <tr><td colspan="6" class="empty-state">Loading...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Change Password Modal -->
+    <div class="modal-overlay" id="changePasswordModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Change Password</h3>
+                <button class="modal-close" onclick="closeModal('changePasswordModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="changePasswordForm">
+                    <div class="form-group">
+                        <label>Current Password</label>
+                        <input type="password" name="current_password" required>
+                    </div>
+                    <div class="form-group">
+                        <label>New Password</label>
+                        <input type="password" name="new_password" required minlength="6">
+                    </div>
+                    <div class="form-group">
+                        <label>Confirm New Password</label>
+                        <input type="password" name="confirm_password" required minlength="6">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update Password</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+    <script>
+        checkAuth().then(function(ok) {
+            if (ok) loadDashboard();
+        });
+    </script>
+</body>
+</html>
